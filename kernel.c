@@ -87,30 +87,43 @@ void terminal_putentryat(char c, uint8_t color, size_t x, size_t y)
 	terminal_buffer[index] = vga_entry(c, color);
 }
 
+void terminal_scroll() {
+	for (size_t y = 0; y + 1 < VGA_HEIGHT; y++) {
+		for (size_t x = 0; x < VGA_WIDTH; x++) {
+			terminal_buffer[y * VGA_WIDTH + x] = terminal_buffer[(y + 1) * VGA_WIDTH + x];
+		}
+	}
+
+	for (size_t x = 0; x < VGA_WIDTH; x++)
+		terminal_buffer[(VGA_HEIGHT - 1) * VGA_WIDTH + x] = vga_entry(' ', terminal_color);
+
+	terminal_row--;
+}
+
 void newline() {
 	terminal_column = 0;
 	if (++terminal_row == VGA_HEIGHT) {
-		terminal_row = 0;
+		terminal_scroll();
 	}
 }
 
 void terminal_putchar(char c) 
 {
-	terminal_putentryat(c, terminal_color, terminal_column, terminal_row);
-	if (++terminal_column == VGA_WIDTH) {
+	if (c == '\n') {
 		newline();
+	} else { // pour amedee l'africain
+		terminal_putentryat(c, terminal_color, terminal_column, terminal_row);
+		if (++terminal_column == VGA_WIDTH) {
+			newline();
+		}
 	}
 }
 
 void terminal_write(const char* data, size_t size) 
 {
-	for (size_t i = 0; i < size; i++)
-		if (data[i] == '\n') {
-			newline();
-		} else {
-			terminal_putchar(data[i]);
-
-		}
+	for (size_t i = 0; i < size; i++) {
+		terminal_putchar(data[i]);
+	}
 }
 
 void terminal_writestring(const char* data) 
@@ -124,11 +137,8 @@ void kernel_main(void)
 	terminal_initialize();
 
 	/* Newline support is left as an exercise. */
-	int i = 0;
-
-	for (int i = 0; i < 30; ++i) {
+	for (size_t i = 0; i < 30; ++i) {
 		terminal_writestring("Hello, kernel World!\nBloup");
-
 	}
 
 	
