@@ -1,5 +1,3 @@
+size_t strlen(char* a);
 
-
-void foo();
-
-
+char* strcat(char* a, char*  b);
