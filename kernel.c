@@ -1,6 +1,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include "string.h"
 
 // i686-elf-g++ -c kernel.c++ -o kernel.o -ffreestanding -O2 -Wall -Wextra -fno-exceptions -fno-rtti
 // x86_64-elf-g++ -c kernel.c++ -o kernel.o -ffreestanding -O2 -Wall -Wextra -fno-exceptions -fno-rtti
@@ -133,6 +134,7 @@ void terminal_writestring(const char* data)
 
 void kernel_main(void) 
 {
+	foo();
 	/* Initialize terminal interface */
 	terminal_initialize();
 
