@@ -5,7 +5,7 @@ build:
 	mkdir -p isodir/boot/grub
 	cp myos.bin isodir/boot/myos.bin
 	cp grub.cfg isodir/boot/grub/grub.cfg
-	i686-elf-grub-mkrescue -o myos.iso isodir
+	./mkrescue.sh -o myos.iso isodir
 
 run:
 	qemu-system-i386 -cdrom myos.iso
