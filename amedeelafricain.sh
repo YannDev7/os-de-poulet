@@ -1,1 +1,0 @@
-export PATH="/home/zalto/opt/cross/bin:$PATH"
