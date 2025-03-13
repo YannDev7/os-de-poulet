@@ -4,6 +4,7 @@
 #include "string.h"
 #include "terminal.h"
 #include "io.h"
+#include "memory.h"
 // i686-elf-g++ -c kernel.c++ -o kernel.o -ffreestanding -O2 -Wall -Wextra -fno-exceptions -fno-rtti
 // x86_64-elf-g++ -c kernel.c++ -o kernel.o -ffreestanding -O2 -Wall -Wextra -fno-exceptions -fno-rtti
 
@@ -38,5 +39,19 @@ void kernel_main(void)
 	// while (1) {
 
 	// }
+
+	//int* t = (int*)(0xFF);
+	//*t = 42;
+	/*uint32_t* truc = (uint32_t*)0x1;
+	*truc = 42;*/
+	//printf("china town %d", *t);
 	
+	/*for (int i = 0; i < 10000000; i++) {
+		*t = 42;
+		t += 4;
+	}*/
+
+	for (int i = 0; i < 1000; i++) {
+		malloc(42 * i);
+	}
 }

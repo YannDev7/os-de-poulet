@@ -33,6 +33,7 @@
 
 myos.bin
 myos.iso
+isodir/boot/myos.bin
 
 
 mkrescue.sh
