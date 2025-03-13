@@ -22,6 +22,11 @@
 
 void kernel_main(void) 
 {
+
+
+	//char memory[100000] = {0};
+
+
 	/* Initialize terminal interface */
 	terminal_initialize();
 	printf("bloup %d bloup", 10);
