@@ -15,6 +15,5 @@ struct bloup {
     uint32_t* block;
     int len;
 };
-
 void* malloc(uint32_t size);
 void free();

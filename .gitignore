@@ -34,7 +34,7 @@
 myos.bin
 myos.iso
 isodir/boot/myos.bin
-
+*.bin
 
 mkrescue.sh
 amedeelafricain.sh

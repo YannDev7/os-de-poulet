@@ -83,7 +83,7 @@ int printf(const char* restrict format, ...) {
                 putchar('0');
                 written++;
             } else {
-                char digits[10] = {0};
+                char digits[11] = {0};
                 int i;
                 for (i = 0; d > 0; d /= 10) {
                     int v = d % 10;

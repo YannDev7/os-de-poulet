@@ -5,9 +5,10 @@ Bloup* full = NULL;
 // todo: merge consecutive empty blocks
 // use a segtree or heap to get biggest block, or nearest ? or nearest * 2 ? 
 
-int chepa[2000000];
-void* offset = (void*)chepa;
-void* heap_ptr = (void*)chepa;
+#define OFFSET 3000000
+
+void* offset = (void*) OFFSET;
+void* heap_ptr = (void*) OFFSET;
 
 void* malloc(uint32_t size) {
     void* ans = heap_ptr;

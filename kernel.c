@@ -19,18 +19,40 @@
 #endif */
 
 /* Hardware text mode color constants. */
+int c = 4;
 
+void test(int a) {
+	printf("a: %d\n", &a);
+}
+
+int fact(int c) {
+	if (c == 0) return 1;
+	printf("c: %d\n", &c);
+	return fact(c-1) * c;
+}
 
 void kernel_main(void) 
 {
 
 
-	//char memory[100000] = {0};
-
+	char memory[6000] = {0};
+	int b = 12;
 
 	/* Initialize terminal interface */
 	terminal_initialize();
-	printf("bloup %d bloup", 10);
+	printf("gaaaaghg\n");
+	printf("bloup %d %d bloup", malloc(0), &c);
+	test((int) &b);
+	fact(12);
+
+	int * tab = malloc(sizeof(int) * 1000000000);
+	for (int i = 0; i < 1000000000; i += 1) {
+		tab[i] = 1;
+	}
+
+	printf("bloaousdfn");
+
+
 	// /* Newline support is left as an exercise. */
 	// for (size_t i = 0; i < 30; ++i) {
 	// 	terminal_writestring("Hello, kernel World!\nBloup");
@@ -51,7 +73,5 @@ void kernel_main(void)
 		t += 4;
 	}*/
 
-	for (int i = 0; i < 1000; i++) {
-		malloc(42 * i);
-	}
+
 }
