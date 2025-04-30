@@ -151,6 +151,5 @@ void kernel_main(void) {
 
     printf("Bienvenue sur BonobOS !\n");
 
-
     asm ("int $33");
 }

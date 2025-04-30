@@ -38,18 +38,22 @@ isr14:
 .macro ISR_ERR index
 .globl _isr_\index
 _isr_\index:
+    pusha
     push $\index
     call exception_handler
     pop %ecx
+    popa
     iret
 .endm
 
 .macro ISR_NOERR index
 .globl _isr_\index
 _isr_\index:
+    pusha
     push $\index
     call exception_handler
     pop %ecx
+    popa
     iret
 .endm
 
@@ -89,5 +93,17 @@ ISR_NOERR 31
 
 .globl _irq_1
 _irq_1:
+    pusha
+    push %gs
+    push %fs
+    push %ds
+    push %es
+
     call irq_kbd_handler
+
+    pop %es
+    pop %ds
+    pop %fs
+    pop %gs
+    popa
     iret
