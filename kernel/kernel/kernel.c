@@ -160,10 +160,7 @@ void kernel_main(void) {
 
     printf("Bienvenue sur BonobOS !\n");
 
-<<<<<<< HEAD
-=======
     while (1) {
         asm ("nop");
     }
->>>>>>> origin/yann
 }

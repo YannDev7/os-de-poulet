@@ -63,10 +63,6 @@ _irq_0:
 .globl _irq_1
 _irq_1:
     pusha
-<<<<<<< HEAD
     call irq_kbd_handler
-=======
-    call irq_kbd_handler
->>>>>>> origin/yann
     popa
     iret
