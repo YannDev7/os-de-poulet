@@ -16,8 +16,8 @@ _isr_\index:
     push $\index
     call exception_handler
     pop %ecx
-    iret
     popa
+    iret
 .endm
 
 ISR_NOERR 0
@@ -63,6 +63,10 @@ _irq_0:
 .globl _irq_1
 _irq_1:
     pusha
+<<<<<<< HEAD
     call irq_kbd_handler
+=======
+    call irq_kbd_handler
+>>>>>>> origin/yann
     popa
     iret
