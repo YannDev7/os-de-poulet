@@ -1,56 +1,23 @@
-.globl isr0
-isr0:
- pusha
- push %gs
- push %fs
- push %ds
- push %es
-
- call _interrupt_0
-
- pop %es
- pop %ds
- pop %fs
- pop %gs
- popa
- iret
-
-isr14:
- pusha
- push %gs
- push %fs
- push %ds
- push %es
-
- mov %cr2, %eax
- push %eax
- call _interrupt_0
- pop %eax
-
- pop %es
- pop %ds
- pop %fs
- pop %gs
- popa
- iret
-
-
 .macro ISR_ERR index
 .globl _isr_\index
 _isr_\index:
+    pusha
     push $\index
     call exception_handler
     pop %ecx
+    popa
     iret
 .endm
 
 .macro ISR_NOERR index
 .globl _isr_\index
 _isr_\index:
+    pusha
     push $\index
     call exception_handler
     pop %ecx
     iret
+    popa
 .endm
 
 ISR_NOERR 0
@@ -86,8 +53,16 @@ ISR_NOERR 29
 ISR_ERR   30
 ISR_NOERR 31
 
+.globl _irq_0
+_irq_0:
+    pusha
+    call irq_timer_handler
+    popa
+    iret
 
 .globl _irq_1
 _irq_1:
+    pusha
     call irq_kbd_handler
+    popa
     iret

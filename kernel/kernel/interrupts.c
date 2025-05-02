@@ -1,5 +1,7 @@
 #include <stdint.h>
 #include <stdio.h>
+#include <sys/io.h>
+#include "idt.h"
 
 void _interrupt_0 () {
     printf("Exception : Divide Error\n");
@@ -23,3 +25,29 @@ void exception_handler(uint32_t num) {
     printf("Aie aie aie : %d!\n", num);
     __asm__ volatile ("cli; hlt"); // halts the computer
 }
+
+// IRQ 0 : timer
+
+
+int tick = 0;
+void irq_timer_handler() {
+    tick++;
+    if (tick % 100 == 0)
+        printf("Une seconde est passee !\n");
+    pic_acknowledge(0x20);
+}
+
+// IRQ 1 : clavier
+
+#define KBD_DATA_PORT 0x60
+uint8_t read_scancode() {
+    return inb(KBD_DATA_PORT);
+}
+
+void irq_kbd_handler() {
+    uint8_t scancode = read_scancode();
+    printf("Scancode : %d\n", scancode);
+    pic_acknowledge(0x21);
+}
+
+

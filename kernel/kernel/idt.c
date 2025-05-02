@@ -57,6 +57,8 @@ extern void _isr_28();
 extern void _isr_29();
 extern void _isr_30();
 extern void _isr_31();
+
+extern void _irq_0();
 extern void _irq_1();
 
 void init_idt() {
@@ -96,7 +98,9 @@ void init_idt() {
     idt_set_descriptor(30, _isr_30, 0x8e);
     idt_set_descriptor(31, _isr_31, 0x8e);
 
+    idt_set_descriptor(0x20, _irq_0, 0x8e);
     idt_set_descriptor(0x21, _irq_1, 0x8e);
+    outb(0x21, ~(0x3));
 
     loadIDT(&idtr);
 }
@@ -126,24 +130,15 @@ arguments:
 void init_pics(uint32_t offset1, uint32_t offset2)
 {
 	outb(PIC1, ICW1_INIT | ICW1_ICW4);  // starts the initialization sequence (in cascade mode)
-	io_wait();
 	outb(PIC2, ICW1_INIT | ICW1_ICW4);
-	io_wait();
 	outb(PIC1 + 1, offset1);                 // ICW2: Master PIC vector offset
-	io_wait();
 	outb(PIC2 + 1, offset2);                 // ICW2: Slave PIC vector offset
-	io_wait();
 	outb(PIC1 + 1, 4);                       // ICW3: tell Master PIC that there is a slave PIC at IRQ2 (0000 0100)
-	io_wait();
 	outb(PIC2 + 1, 2);                       // ICW3: tell Slave PIC its cascade identity (0000 0010)
-	io_wait();
 
 	outb(PIC1 + 1, ICW4_8086);               // ICW4: have the PICs use 8086 mode (and not 8080 mode)
-	io_wait();
 	outb(PIC2 + 1, ICW4_8086);
-	io_wait();
 
-	// Unmask both PICs.
 	outb(PIC1+1, 0);
 	outb(PIC2+1, 0);
 }
@@ -159,14 +154,4 @@ void pic_acknowledge(uint32_t code) {
         outb(0x28, ACK_SIGNAL);
 }
 
-void irq_kbd_handler() {
-    uint8_t scancode = inb(0x60);
-    printf("Scancode : %d\n", scancode);
-    pic_acknowledge(0x21);
-}
 
-
-#define KBD_DATA_PORT 0x60
-uint8_t read_scancode() {
-    return inb(KBD_DATA_PORT);
-}

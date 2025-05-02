@@ -24,5 +24,6 @@ void toggle_interrupts(int);
 void idt_set_descriptor(uint16_t, void (*handler)(), uint8_t flags);
 void init_idt(void);
 void init_pics(uint32_t, uint32_t);
+void pic_acknowledge(uint32_t);
 
 #endif // IDT_H_

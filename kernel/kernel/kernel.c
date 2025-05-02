@@ -107,6 +107,14 @@ void map_page(void *virtualaddr, void *physaddr, unsigned int flags) {
     // or you might not notice the change.
 }
 
+void init_timer(uint32_t frequency) {
+    uint32_t divisor = 1193180 / frequency;
+
+    outb(0x43, 0x36); // lance la commande
+    outb(0x40, divisor & 0xff);
+    outb(0x40, (divisor >> 8) & 0xff);
+}
+
 extern uint32_t getValue();
 extern void getIdtptr(struct idt_pointer*);
 
@@ -146,11 +154,13 @@ void kernel_main(void) {
     init_pics(0x20, 0x28);
     init_idt();
 
-
     toggle_interrupts(1);
+
+    init_timer(100);
 
     printf("Bienvenue sur BonobOS !\n");
 
-
-    asm ("int $33");
+    while (1) {
+        asm ("nop");
+    }
 }
