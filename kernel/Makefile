@@ -36,6 +36,7 @@ kernel/interrupts.o \
 kernel/gdt.o \
 kernel/idt.o \
 kernel/desctables.o \
+kernel/memory.o \
 
 
 OBJS=\
