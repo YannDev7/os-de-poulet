@@ -68,6 +68,21 @@ uint8_t prefix_code[424] = {
     [0x53] = KEY_DELETE,
 };
 
+typedef struct {
+    uint8_t keycode;
+    char lower;
+} letter_entry;
+
+letter_entry qwerty_letters[] = {
+    { KEY_Q, 'q' }, { KEY_W, 'w' }, { KEY_E, 'e' }, { KEY_R, 'r' },
+    { KEY_T, 't' }, { KEY_Y, 'y' }, { KEY_U, 'u' }, { KEY_I, 'i' },
+    { KEY_O, 'o' }, { KEY_P, 'p' }, { KEY_A, 'a' }, { KEY_S, 's' },
+    { KEY_D, 'd' }, { KEY_F, 'f' }, { KEY_G, 'g' }, { KEY_H, 'h' },
+    { KEY_J, 'j' }, { KEY_K, 'k' }, { KEY_L, 'l' }, { KEY_Z, 'z' },
+    { KEY_X, 'x' }, { KEY_C, 'c' }, { KEY_V, 'v' }, { KEY_B, 'b' },
+    { KEY_N, 'n' }, { KEY_M, 'm' },
+};
+
 key_press buf_keys[MAX_KEYB_BUFFER_SIZE];
 uint8_t buf_idx = 0;
 uint8_t state = 0;
@@ -93,11 +108,12 @@ char keycode_to_char(uint8_t key_code, uint8_t msk) {
     bool is_shift = (msk >> SHIFT_BIT) & 1;
     bool is_caps  = (msk >> CAPS_BIT) & 1;
 
-    if (key_code >= KEY_A && key_code <= KEY_Z) {
-        char base = 'a' + (key_code - KEY_A);
-        if (shift ^ caps)
-            return base - 32; // Uppercase
-        return base;         // Lowercase
+    // Handle letters
+    for (size_t i = 0; i < sizeof(qwerty_letters) / sizeof(letter_entry); ++i) {
+        if (qwerty_letters[i].keycode == key_code) {
+            char lower = qwerty_letters[i].lower;
+            return (shift ^ caps) ? (lower - 32) : lower;
+        }
     }
 
     switch (key_code) {
