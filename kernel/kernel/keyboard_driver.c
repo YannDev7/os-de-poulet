@@ -150,6 +150,10 @@ void keyboard_driver_irq_handler() {
     uint8_t scan_code = code & (first_bit - 1);
     uint8_t key_code = code_to_kernel(scan_code);
 
+    if (key_code == KEY_DELETE) {
+        terminal_delete();
+    }
+
     state = NORMAL;
 
     if (key_code == KEY_LSHIFT || key_code == KEY_RSHIFT)

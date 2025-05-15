@@ -45,7 +45,6 @@ void terminal_setcolor(uint8_t color) {
 void terminal_putentryat(unsigned char c, uint8_t color, size_t x, size_t y) {
 	const size_t index = y * VGA_WIDTH + x;
 	terminal_buffer[index] = vga_entry(c, color);
-	update_cursor(x, y);
 }
 
 void terminal_scroll() {
@@ -78,6 +77,7 @@ void terminal_putchar(char c)
 			newline();
 		}
 	}
+	update_cursor(terminal_column, terminal_row);
 }
 
 void terminal_write(const char* data, size_t size) {
@@ -87,4 +87,13 @@ void terminal_write(const char* data, size_t size) {
 
 void terminal_writestring(const char* data) {
 	terminal_write(data, strlen(data));
+}
+
+void terminal_delete() {
+	if (terminal_column == 0)
+		return;
+
+	terminal_putentryat(' ', terminal_color, terminal_column, terminal_row);
+	terminal_column--;
+	update_cursor(terminal_column, terminal_row);
 }
