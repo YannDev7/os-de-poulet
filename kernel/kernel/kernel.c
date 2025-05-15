@@ -135,7 +135,12 @@ void init_timer(uint32_t frequency) {
 }
 
 void test_user_function() {
-    printf("je suis en user mode !\n");
+    printf("User mode actif\n\n");
+
+    /* uint32_t addr = 0x1394084; */
+    /* uint32_t x = *(int *)addr; */
+    /* printf("%d\n", x); */
+
     for(;;)
         asm("nop");
     return;
@@ -155,7 +160,7 @@ void kernel_main(void) {
     for (int i = 0; i < 1024; i++)
         page_dir[i] = 0x00000002;
     // la dernière entrée du page directory est lui-même
-    page_dir[1023] = ((unsigned int) page_dir) | 7;
+    page_dir[1023] = ((unsigned int) page_dir) | 3;
     loadPageDirectory((unsigned int *)page_dir);
 
     /** Identity map les premiers 4MiB sinon ça marche pas (les adresse du code
@@ -163,7 +168,7 @@ void kernel_main(void) {
     uint32_t *first_page_table = page_alloc_phys();
     unsigned int j;
     for(j = 0; j < 1024; j++)
-        first_page_table[j] = (j * 0x1000) | 7; // attributes: supervisor level, read/write, present.
+        first_page_table[j] = (j * 0x1000) | 7; // attributes: user level, read/write, present.
     page_dir[0] = ((unsigned int)first_page_table) | 7;
 
     /** Lance la paging pour de bon */

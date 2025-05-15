@@ -2,6 +2,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
+#include <sys/io.h>
 
 #include <kernel/tty.h>
 
@@ -93,7 +94,7 @@ void terminal_delete() {
 	if (terminal_column == 0)
 		return;
 
-	terminal_putentryat(' ', terminal_color, terminal_column, terminal_row);
 	terminal_column--;
+	terminal_putentryat(' ', terminal_color, terminal_column, terminal_row);
 	update_cursor(terminal_column, terminal_row);
 }

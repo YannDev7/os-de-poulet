@@ -5,7 +5,7 @@
 #include "idt.h"
 
 void _interrupt_0 () {
-    printf("Exception : Divide Error\n");
+    printf("\nException 0x0 : Divide Error\n");
    // if we just have ring 0 tasks, we just need to halt the computer
    // if we also had ring 3 tasks, and a ring 3 task was the cause of the
    // exception, then we should delete the ring 3 task and continue on
@@ -13,21 +13,73 @@ void _interrupt_0 () {
    asm("hlt");
 }
 
-void _interrupt_14 (uintptr_t addr) {
-    printf("Exception : Page Fault at addresse %d\n", (int) addr);
-   // if we just have ring 0 tasks, we just need to halt the computer
-   // if we also had ring 3 tasks, and a ring 3 task was the cause of the
-   // exception, then we should delete the ring 3 task and continue on
+void _interrupt_2 () {
+    printf("\nException 0x2 : Non maskable interrupt\n Quelque chose de très grave est arrivé !!\n");
+   asm("cli; hlt");
+}
+
+void _interrupt_5 () {
+    printf("\nException 0x5 : Bound range exceeded\n");
+   asm("cli; hlt");
+}
+
+void _interrupt_8 (uint32_t error_code) {
+    printf("\nException 0x8 : Double Fault\n");
+    printf("Error code : %d\n", error_code);
+   asm("cli; hlt");
+}
+
+void _interrupt_10 (uint32_t error_code) {
+    printf("\nException 0xA : Invalid TSS\n");
+    printf("Error code : %d\n", error_code);
+   asm("cli; hlt");
+}
+
+void _interrupt_11 (uint32_t error_code) {
+    printf("\nException 0xB : Segment not present\n");
+    printf("Error code : %d\n", error_code);
+   asm("cli; hlt");
+}
+
+void _interrupt_12 (uint32_t error_code) {
+    printf("\nException 0xC : Stack-segment fault\n");
+    printf("Error code : %d\n", error_code);
+   asm("cli; hlt");
+}
+
+void _interrupt_13 (uint32_t error_code) {
+    printf("\nException 0xD : General Protection Fault\n");
+    printf("Error code : %d\n", error_code);
+   asm("cli; hlt");
+}
+
+void _interrupt_14 (uint32_t error_code, uintptr_t addr) {
+    printf("\nException 0xE : Page Fault\n");
+    printf("Error code : %d\n", error_code);
+    printf("Page address : %d\n", addr);
    asm("cli");
    asm("hlt");
 }
 
-void exception_handler(uint32_t num) {
-    if (num == 0) {
+void exception_handler(uint32_t num, uint32_t error_code) {
+    if (num == 0)
         _interrupt_0();
-    }
+    else if (num == 2)
+        _interrupt_2();
+    else if (num == 5)
+        _interrupt_5();
+    else if (num == 8)
+        _interrupt_8(error_code);
+    else if (num == 10)
+        _interrupt_10(error_code);
+    else if (num == 11)
+        _interrupt_11(error_code);
+    else if (num == 12)
+        _interrupt_12(error_code);
+    else if (num == 13)
+        _interrupt_13(error_code);
     else {
-        printf("Aie aie aie : %d!\n", num);
+        printf("Aie aie aie : %d! Error code : %d\n", num, error_code);
         __asm__ volatile ("cli; hlt"); // halts the computer
     }
 }
@@ -56,8 +108,6 @@ uint8_t read_scancode() {
 }
 
 void irq_kbd_handler() {
-    //uint8_t scancode = read_scancode();
-    //printf("Scancode : %d\n", scancode);
     keyboard_driver_irq_handler();
     pic_acknowledge(0x21);
 }

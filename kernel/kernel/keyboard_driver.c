@@ -129,7 +129,6 @@ char keycode_to_char(uint8_t key_code, uint8_t msk) {
         case KEY_0: return shift ? ')' : '0';
         case KEY_SPACE: return ' ';
         case KEY_ENTER: return '\n';
-        case KEY_BACKSPACE: return '\b';
         default: return 0;
     }
 }
@@ -150,7 +149,7 @@ void keyboard_driver_irq_handler() {
     uint8_t scan_code = code & (first_bit - 1);
     uint8_t key_code = code_to_kernel(scan_code);
 
-    if (key_code == KEY_DELETE) {
+    if (key_code == KEY_BACKSPACE && !released) {
         terminal_delete();
     }
 

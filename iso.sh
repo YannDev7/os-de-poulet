@@ -12,4 +12,4 @@ menuentry "myos" {
 	multiboot /boot/myos.kernel
 }
 EOF
-i686-elf-grub-mkrescue -o myos.iso isodir
+grub-mkrescue -o myos.iso isodir
