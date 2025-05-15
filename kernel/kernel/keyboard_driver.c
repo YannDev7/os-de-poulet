@@ -5,6 +5,7 @@
 #include <kernel/tty.h>
 #include <sys/io.h>
 #include "keyboard_driver.h"
+#include "sound.h"
 
 const uint8_t normal_code[424] = {
     [0x01] = KEY_ESC,
@@ -148,6 +149,8 @@ void keyboard_driver_irq_handler() {
     bool released = code & first_bit;
     uint8_t scan_code = code & (first_bit - 1);
     uint8_t key_code = code_to_kernel(scan_code);
+
+    play_monkey_sound();
 
     if (key_code == KEY_BACKSPACE && !released) {
         terminal_delete();

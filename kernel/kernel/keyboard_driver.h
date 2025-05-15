@@ -1,6 +1,7 @@
 #ifndef _KBDRIVER
 #define _KBDRIVER
 #include <stdint.h>
+#include <stddef.h>
 
 #define MAX_KEYB_BUFFER_SIZE 424
 #define NORMAL 0
@@ -80,4 +81,7 @@ typedef struct {
 } key_press;
 
 void keyboard_driver_irq_handler(void);
+void initialize_sb16(void);
+uint8_t* load_raw_file(const char* filename, size_t* size);
+void play_wav(const uint8_t* data, size_t length);
 #endif
