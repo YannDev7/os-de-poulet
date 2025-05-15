@@ -7,6 +7,7 @@
 #include "kernel.h"
 #include "gdt.h"
 #include "idt.h"
+#include "interrupts.h"
 
 extern void loadPageDirectory(unsigned int*);
 extern void enablePaging();
@@ -115,21 +116,20 @@ void init_timer(uint32_t frequency) {
     outb(0x40, (divisor >> 8) & 0xff);
 }
 
-extern uint32_t getValue();
-extern void getIdtptr(struct idt_pointer*);
-
-void handler() {
-    printf("coucou je suis l'interruption de test ^^ !\n");
+void test_user_function() {
+    printf("je suis en user mode !\n");
+    for(;;)
+        asm("nop");
     return;
 }
 
+extern void jump_usermode(void);
+
 void kernel_main(void) {
-
+    toggle_interrupts(0);
     terminal_initialize();
+
     init_gdt();
-    /* _test_gdt(); */
-
-
 
     init_frame_map();
     /** Setup du page directory */
@@ -137,7 +137,7 @@ void kernel_main(void) {
     for (int i = 0; i < 1024; i++)
         page_dir[i] = 0x00000002;
     // la dernière entrée du page directory est lui-même
-    page_dir[1023] = ((unsigned int) page_dir) | 3;
+    page_dir[1023] = ((unsigned int) page_dir) | 7;
     loadPageDirectory((unsigned int *)page_dir);
 
     /** Identity map les premiers 4MiB sinon ça marche pas (les adresse du code
@@ -145,10 +145,10 @@ void kernel_main(void) {
     uint32_t *first_page_table = page_alloc_phys();
     unsigned int j;
     for(j = 0; j < 1024; j++)
-        first_page_table[j] = (j * 0x1000) | 3; // attributes: supervisor level, read/write, present.
-    page_dir[0] = ((unsigned int)first_page_table) | 3;
+        first_page_table[j] = (j * 0x1000) | 7; // attributes: supervisor level, read/write, present.
+    page_dir[0] = ((unsigned int)first_page_table) | 7;
 
-    /** Lance la paging pour de bon*/
+    /** Lance la paging pour de bon */
     enablePaging();
 
     init_pics(0x20, 0x28);
@@ -160,7 +160,9 @@ void kernel_main(void) {
 
     printf("Bienvenue sur BonobOS !\n");
 
-    while (1) {
-        asm ("nop");
-    }
+    jump_usermode();
+
+    printf("Je suis invisible svp !\n");
+
+    while (1) asm ("hlt");
 }

@@ -22,19 +22,29 @@ void _interrupt_14 (uintptr_t addr) {
 }
 
 void exception_handler(uint32_t num) {
-    printf("Aie aie aie : %d!\n", num);
-    __asm__ volatile ("cli; hlt"); // halts the computer
+    if (num == 0) {
+        _interrupt_0();
+    }
+    else {
+        printf("Aie aie aie : %d!\n", num);
+        __asm__ volatile ("cli; hlt"); // halts the computer
+    }
 }
 
 // IRQ 0 : timer
 
 
-int tick = 0;
+uint32_t tick = 0;
 void irq_timer_handler() {
     tick++;
-    if (tick % 100 == 0)
-        printf("Une seconde est passee !\n");
     pic_acknowledge(0x20);
+}
+
+void sleep(uint32_t centieme_sec) {
+    int start = tick;
+    while (tick - start < centieme_sec) {
+        asm ("hlt");
+    }
 }
 
 // IRQ 1 : clavier
