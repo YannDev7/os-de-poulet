@@ -53,7 +53,7 @@ void _malloc_test() {
         for (int j = 0; j < 500; ++j) {
             chepa[j] = 42;
         }
-        //printf("42=%d, addr=%d", chepa[23], chepa);
+        printf("42=%d, addr=%d", chepa[23], chepa);
     } 
 
 }
@@ -176,6 +176,9 @@ void kernel_main(void) {
 
     init_pics(0x20, 0x28);
     init_idt();
+
+    init_malloc();
+    // _malloc_test();
 
     toggle_interrupts(1);
 
