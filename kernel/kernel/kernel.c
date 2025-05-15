@@ -9,6 +9,7 @@
 #include "gdt.h"
 #include "idt.h"
 #include "interrupts.h"
+#include "shell.h"
 
 extern void loadPageDirectory(unsigned int*);
 extern void enablePaging();
@@ -140,6 +141,17 @@ void test_user_function() {
     /* uint32_t addr = 0x1394084; */
     /* uint32_t x = *(int *)addr; */
     /* printf("%d\n", x); */
+
+    char buffer[500];
+    printf("jsp\n");
+    while (1) {
+        input(buffer);
+        printf("j'ai lu %s\n", buffer);
+
+        for (int i = 0; i < 500; ++i) {
+            buffer[i] = 0;
+        }
+    }
 
     for(;;)
         asm("nop");

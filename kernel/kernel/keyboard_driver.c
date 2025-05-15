@@ -4,6 +4,8 @@
 #include <stdbool.h>
 #include <kernel/tty.h>
 #include <sys/io.h>
+#include <string.h>
+
 #include "keyboard_driver.h"
 
 const uint8_t normal_code[424] = {
@@ -84,8 +86,18 @@ letter_entry qwerty_letters[] = {
 };
 
 key_press buf_keys[MAX_KEYB_BUFFER_SIZE];
-uint8_t buf_idx = 0;
+
+char line_buffer1[MAX_LINE_BUFFER_SIZE] = {0};
+char line_buffer2[MAX_LINE_BUFFER_SIZE] = {0};
+
+uint16_t buf_idx = 0;
+uint16_t line_buf_idx = 0;
+
 uint8_t state = 0;
+
+
+
+
 
 bool shift;
 bool ctrl;
@@ -133,6 +145,15 @@ char keycode_to_char(uint8_t key_code, uint8_t msk) {
     }
 }
 
+char * get_line_buffer() {
+    return line_buffer2;
+}
+
+void clear_line_buffer() {
+    line_buffer2[0] = 0;
+}
+
+
 // todo update msk when ctrl or smthg else is pressed
 void keyboard_driver_irq_handler() {
     // 0x60 = keyboard data port
@@ -151,6 +172,9 @@ void keyboard_driver_irq_handler() {
 
     if (key_code == KEY_BACKSPACE && !released) {
         terminal_delete();
+        if (line_buf_idx > 0) {
+            line_buffer1[line_buf_idx--] = 0;
+        }
     }
 
     state = NORMAL;
@@ -180,9 +204,19 @@ void keyboard_driver_irq_handler() {
     buf_keys[buf_idx] = bench_press;
 
     char coccinelle = keycode_to_char(key_code, bench_press.msk);
-    if (coccinelle)
+    if (coccinelle) {
         terminal_putchar(coccinelle);
+        if (coccinelle == '\n') {
+            line_buffer1[line_buf_idx++] = 0;
+            memcpy(line_buffer2, line_buffer1, line_buf_idx);
 
+            line_buffer2[line_buf_idx-1] = 0;
+
+            line_buf_idx = 0;
+        } else if (line_buf_idx < MAX_LINE_BUFFER_SIZE - 1) {
+            line_buffer1[line_buf_idx++] = coccinelle;
+        }
+    }
     buf_idx++;
     // micro opti
     if (buf_idx >= MAX_KEYB_BUFFER_SIZE)
