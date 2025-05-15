@@ -4,6 +4,7 @@
 #include <stddef.h>
 
 #define MAX_KEYB_BUFFER_SIZE 424
+#define MAX_LINE_BUFFER_SIZE 425
 #define NORMAL 0
 #define PREFIX 1
 
@@ -81,6 +82,14 @@ typedef struct {
 } key_press;
 
 void keyboard_driver_irq_handler(void);
+
+
+
+char * get_line_buffer();
+void clear_line_buffer();
+
+
+
 void initialize_sb16(void);
 uint8_t* load_raw_file(const char* filename, size_t* size);
 void play_wav(const uint8_t* data, size_t length);

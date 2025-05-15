@@ -9,6 +9,7 @@
 #include "gdt.h"
 #include "idt.h"
 #include "interrupts.h"
+#include "shell.h"
 
 extern void loadPageDirectory(unsigned int*);
 extern void enablePaging();
@@ -53,7 +54,7 @@ void _malloc_test() {
         for (int j = 0; j < 500; ++j) {
             chepa[j] = 42;
         }
-        //printf("42=%d, addr=%d", chepa[23], chepa);
+        printf("42=%d, addr=%d", chepa[23], chepa);
     } 
 
 }
@@ -141,6 +142,17 @@ void test_user_function() {
     /* uint32_t x = *(int *)addr; */
     /* printf("%d\n", x); */
 
+    char buffer[500];
+    printf("jsp\n");
+    while (1) {
+        input(buffer);
+        printf("j'ai lu %s\n", buffer);
+
+        for (int i = 0; i < 500; ++i) {
+            buffer[i] = 0;
+        }
+    }
+
     for(;;)
         asm("nop");
     return;
@@ -176,6 +188,9 @@ void kernel_main(void) {
 
     init_pics(0x20, 0x28);
     init_idt();
+
+    init_malloc();
+    // _malloc_test();
 
     toggle_interrupts(1);
 
