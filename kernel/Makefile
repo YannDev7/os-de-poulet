@@ -38,6 +38,7 @@ kernel/idt.o \
 kernel/desctables.o \
 kernel/usermode.o \
 kernel/memory.o \
+kernel/keyboard_driver.o \
 
 
 OBJS=\
