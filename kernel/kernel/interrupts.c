@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <sys/io.h>
+#include "keyboard_driver.h"
 #include "idt.h"
 
 void _interrupt_0 () {
@@ -55,8 +56,9 @@ uint8_t read_scancode() {
 }
 
 void irq_kbd_handler() {
-    uint8_t scancode = read_scancode();
-    printf("Scancode : %d\n", scancode);
+    //uint8_t scancode = read_scancode();
+    //printf("Scancode : %d\n", scancode);
+    keyboard_driver_irq_handler();
     pic_acknowledge(0x21);
 }
 
