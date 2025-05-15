@@ -37,6 +37,7 @@ kernel/gdt.o \
 kernel/idt.o \
 kernel/desctables.o \
 kernel/usermode.o \
+kernel/memory.o \
 
 
 OBJS=\

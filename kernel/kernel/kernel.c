@@ -4,6 +4,8 @@
 #include <sys/io.h>
 #include <kernel/tty.h>
 
+#include <kernel/memory.h>
+
 #include "kernel.h"
 #include "gdt.h"
 #include "idt.h"
@@ -39,6 +41,23 @@ void *page_alloc_phys(void) {
     return start_frame + i*PAGESIZE;
 }
 
+void _malloc_test() {
+
+    int * v123 = malloc(sizeof(int) * 3);
+    v123[0] = 1;
+    v123[1] = 2;
+    v123[2] = 3;
+
+
+    for (int i = 0; i < 1000; ++i) {
+        char * chepa = malloc(sizeof(char) * 500);
+        for (int j = 0; j < 500; ++j) {
+            chepa[j] = 42;
+        }
+        //printf("42=%d, addr=%d", chepa[23], chepa);
+    } 
+
+}
 
 /*
 ** Map la pagetable d'indice `pdindex` à une addresse physique, si elle n'en a pas déjà une

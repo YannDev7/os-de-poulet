@@ -7,4 +7,11 @@
 
 #define NPAGES            (MEMSIZE_PHYSICAL / PAGESIZE)
 
+void * page_alloc_phys(void);
+
+void map_page(void *virtualaddr, void *physaddr, unsigned int flags);
+
+
+
+
 #endif // KERNEL_H_

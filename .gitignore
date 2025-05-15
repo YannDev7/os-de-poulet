@@ -40,3 +40,8 @@ mkrescue.sh
 amedeelafricain.sh
 
 isodir
+
+config-amedee.sh
+qemu-amedee.sh
+
+
