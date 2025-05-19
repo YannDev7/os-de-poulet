@@ -171,7 +171,7 @@ void keyboard_driver_irq_handler() {
     uint8_t scan_code = code & (first_bit - 1);
     uint8_t key_code = code_to_kernel(scan_code);
 
-    play_monkey_sound();
+    // play_monkey_sound();
 
     if (key_code == KEY_BACKSPACE && !released) {
         terminal_delete();

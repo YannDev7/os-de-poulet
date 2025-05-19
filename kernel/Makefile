@@ -41,6 +41,7 @@ kernel/usermode.o \
 kernel/memory.o \
 kernel/keyboard_driver.o \
 kernel/shell.o \
+kernel/sound.o \
 
 
 OBJS=\

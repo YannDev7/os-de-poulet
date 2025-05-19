@@ -5,6 +5,7 @@
 #include <kernel/tty.h>
 #include <kernel/memory.h>
 
+
 #include "kernel.h"
 #include "gdt.h"
 #include "idt.h"
@@ -48,14 +49,29 @@ void _malloc_test() {
     v123[1] = 2;
     v123[2] = 3;
 
-
-    for (int i = 0; i < 1000; ++i) {
+    // test du malloc
+    for (int i = 0; i < 100; ++i) {
         char * chepa = malloc(sizeof(char) * 500);
         for (int j = 0; j < 500; ++j) {
-            chepa[j] = 42;
+            chepa[j] = 2;
         }
-        printf("42=%d, addr=%d", chepa[23], chepa);
+        printf("42=%d, addr=%d\n", chepa[23], chepa);
     } 
+
+    // test du free
+
+    for (int i = 0; i < 1; ++i) {
+        char * chepa = malloc(sizeof(char) * 10000);
+        chepa[100] = 42;
+        chepa[0] = 42;
+        chepa[9000] = 58;
+
+        char * bloup = malloc(sizeof(char));
+        bloup[0] = 9;
+        //printf("58=%d\n", chepa[9000]);
+        free(chepa);
+    }
+
 
 }
 
@@ -142,17 +158,7 @@ void test_user_function() {
     /* uint32_t x = *(int *)addr; */
     /* printf("%d\n", x); */
 
-    char buffer[500];
-    printf("jsp\n");
-    while (1) {
-        input(buffer);
-        printf("j'ai lu %s\n", buffer);
-
-        for (int i = 0; i < 500; ++i) {
-            buffer[i] = 0;
-        }
-    }
-
+    shell();
     for(;;)
         asm("nop");
     return;
@@ -190,13 +196,14 @@ void kernel_main(void) {
     init_idt();
 
     init_malloc();
-    // _malloc_test();
 
     toggle_interrupts(1);
 
     init_timer(100);
 
     printf("Bienvenue sur BonobOS !\n");
+
+
 
     jump_usermode();
 
